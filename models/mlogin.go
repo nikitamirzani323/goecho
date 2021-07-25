@@ -4,12 +4,12 @@ import (
 	"database/sql"
 	"fmt"
 	"goecho/db"
+	"goecho/helpers"
 )
-
 
 type User struct {
 	Id       int    `json:"id"`
-	username string `json:"username"`
+	Username string `json:"username"`
 }
 
 func CheckLogin(username, password string) (bool, error) {
@@ -20,8 +20,8 @@ func CheckLogin(username, password string) (bool, error) {
 
 	sqlstatement := "SELECT * FROM tbl_mst_user WHERE username=?"
 
-	err := con.QueryRow(sqlstatement,username).Scan(
-		&obj.Id, &obj.username, $pwd,
+	err := con.QueryRow(sqlstatement, username).Scan(
+		&obj.Id, &obj.Username, &pwd,
 	)
 
 	if err == sql.ErrNoRows {
@@ -33,4 +33,13 @@ func CheckLogin(username, password string) (bool, error) {
 		fmt.Println("Query error")
 		return false, err
 	}
+
+	match, err := helpers.CheckPasswordHash(password, pwd)
+
+	if !match {
+		fmt.Println("Hash and password doesn't match")
+		return false, err
+	}
+
+	return true, nil
 }
