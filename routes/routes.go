@@ -9,6 +9,7 @@ import (
 
 func Init() *echo.Echo {
 	app := echo.New()
+	app.Use(middleware.Logger)
 	app.Static("/", "public")
 	// app.GET("/", func(c echo.Context) error {
 	// 	return c.String(http.StatusOK, "Hello World")
