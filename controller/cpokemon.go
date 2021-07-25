@@ -1,9 +1,7 @@
 package controller
 
 import (
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
+	"goecho/models"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -47,46 +45,51 @@ type Info struct {
 
 func GetPokemon(c echo.Context) error {
 	pokemonName := c.FormValue("nama")
-	client := http.DefaultClient
-
-	req, err := http.NewRequest("GET", "https://pokeapi.co/api/v2/pokemon/"+pokemonName, nil)
+	result, err := models.FetchAll_mpokemon(pokemonName)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": err.Error()})
 	}
-	res, err := client.Do(req)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"message": err.Error()})
-	}
-	bd, _ := ioutil.ReadAll(res.Body)
-	var responseObject Response
-	json.Unmarshal(bd, &responseObject)
+	return c.JSON(http.StatusOK, result)
+	// client := http.DefaultClient
 
-	author := Author{Name: "Eliiot Forber", Age: 25, Developer: true}
-	book := Book{Title: "learning python", Author: author}
+	// req, err := http.NewRequest("GET", "https://pokeapi.co/api/v2/pokemon/"+pokemonName, nil)
+	// if err != nil {
+	// 	return c.JSON(http.StatusInternalServerError, map[string]string{"message": err.Error()})
+	// }
+	// res, err := client.Do(req)
+	// if err != nil {
+	// 	return c.JSON(http.StatusInternalServerError, map[string]string{"message": err.Error()})
+	// }
+	// bd, _ := ioutil.ReadAll(res.Body)
+	// var responseObject Response
+	// json.Unmarshal(bd, &responseObject)
 
-	// bytearr, err := json.Marshal(book)
-	bytearr, err := json.MarshalIndent(book, "", " ")
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(string(bytearr))
+	// author := Author{Name: "Eliiot Forber", Age: 25, Developer: true}
+	// book := Book{Title: "learning python", Author: author}
 
-	jsonstring := `
-		{
-			"name": "battrey sensor", 
-			"capacity": 40, 
-			"time":"2019-01-21T19:07:28Z",
-			"info": {
-				"desc": "a sensor reading"
-			}
-		}`
+	// // bytearr, err := json.Marshal(book)
+	// bytearr, err := json.MarshalIndent(book, "", " ")
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
+	// fmt.Println(string(bytearr))
 
-	var reading SensorReading
-	errr := json.Unmarshal([]byte(jsonstring), &reading)
-	if errr != nil {
-		fmt.Println(errr)
-	}
-	fmt.Printf("%+v\n", reading)
+	// jsonstring := `
+	// 	{
+	// 		"name": "battrey sensor",
+	// 		"capacity": 40,
+	// 		"time":"2019-01-21T19:07:28Z",
+	// 		"info": {
+	// 			"desc": "a sensor reading"
+	// 		}
+	// 	}`
 
-	return c.JSON(http.StatusOK, responseObject)
+	// var reading SensorReading
+	// errr := json.Unmarshal([]byte(jsonstring), &reading)
+	// if errr != nil {
+	// 	fmt.Println(errr)
+	// }
+	// fmt.Printf("%+v\n", reading)
+
+	// return c.JSON(http.StatusOK, responseObject)
 }
