@@ -21,5 +21,8 @@ func Init() *echo.Echo {
 
 	app.GET("/generate-hash", controller.GenerateHashPassword)
 	app.POST("/login", controller.CheckLogin)
+
+	app.GET("/test-struct-validation", controller.TestStructValidation)
+	app.GET("/test-variabel-validation", controller.TestVariabelValidation)
 	return app
 }

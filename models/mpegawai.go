@@ -3,13 +3,15 @@ package models
 import (
 	"goecho/db"
 	"net/http"
+
+	"github.com/go-playground/validator"
 )
 
 type Mpegawai struct {
 	Id        int    `json:"id"`
-	Nama      string `json:"nama"`
-	Alamat    string `json:"alamat"`
-	Telephone string `json:"telephone"`
+	Nama      string `json:"nama" validate:"required"`
+	Alamat    string `json:"alamat" validate:"required`
+	Telephone string `json:"telephone" validate:"required`
 }
 
 func FetchAll_mpegawai() (Response, error) {
@@ -45,6 +47,18 @@ func FetchAll_mpegawai() (Response, error) {
 
 func Store_mpegawai(nama string, alamat string, telephone string) (Response, error) {
 	var res Response
+	v := validator.New()
+
+	peg := Mpegawai{
+		Nama:      nama,
+		Alamat:    alamat,
+		Telephone: telephone,
+	}
+
+	err := v.Struct(peg)
+	if err != nil {
+		return res, err
+	}
 
 	con := db.CreateCon()
 

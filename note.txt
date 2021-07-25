@@ -1,2 +1,10 @@
 Link TUtorial
 https://www.youtube.com/watch?v=x-62G2VQyps&list=PLO2Rv4lKm-K0vR95sfEXznno4421Z67OF&index=9
+
+
+JWT
+https://github.com/dgrijalva/jwt-go
+
+VALIDATOR
+https://pkg.go.dev/github.com/go-playground/validator/v10
+go get github.com/go-playground/validator
