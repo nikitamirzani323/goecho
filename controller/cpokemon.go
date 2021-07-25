@@ -10,15 +10,39 @@ import (
 )
 
 type Response struct {
-	Name    string    `json:"name"`
-	Pokemon []Pokemon `json:"pokemon_entries"`
+	Name           string      `json:"name"`
+	Order          int         `json:"order"`
+	Height         int         `json:"height"`
+	BaseExperience int         `json:"base_experience"`
+	Weight         int         `json:"weight"`
+	Abilities      []Abilities `json:"abilities"`
 }
-type Pokemon struct {
-	EntryNo int            `json:"entry_number"`
-	Species PokemonSpecies `json:"pokemon_species"`
+type Abilities struct {
+	Slot    int     `json:"slot"`
+	Ability Ability `json:"ability"`
 }
-type PokemonSpecies struct {
+type Ability struct {
 	Name string `json:"name"`
+	Url  string `json:url`
+}
+
+type Book struct {
+	Title  string `json:"title"`
+	Author Author `json:"author"`
+}
+type Author struct {
+	Name      string `json:"name"`
+	Age       int    `json:"age"`
+	Developer bool   `json:"developer"`
+}
+type SensorReading struct {
+	Name        string `json:"name"`
+	Capacity    string `json:"capacity"`
+	Time        string `json:"time"`
+	Information Info   `json:"info"`
+}
+type Info struct {
+	Description string `json:"desc"`
 }
 
 func GetPokemon(c echo.Context) error {
@@ -37,10 +61,32 @@ func GetPokemon(c echo.Context) error {
 	var responseObject Response
 	json.Unmarshal(bd, &responseObject)
 
-	fmt.Println(responseObject.Name)
-	fmt.Println(len(responseObject.Pokemon))
-	for i := 0; i < len(responseObject.Pokemon); i++ {
-		fmt.Println(responseObject.Pokemon[i].Species.Name)
+	author := Author{Name: "Eliiot Forber", Age: 25, Developer: true}
+	book := Book{Title: "learning python", Author: author}
+
+	// bytearr, err := json.Marshal(book)
+	bytearr, err := json.MarshalIndent(book, "", " ")
+	if err != nil {
+		fmt.Println(err)
 	}
-	return c.JSON(http.StatusOK, responseObject.Name)
+	fmt.Println(string(bytearr))
+
+	jsonstring := `
+		{
+			"name": "battrey sensor", 
+			"capacity": 40, 
+			"time":"2019-01-21T19:07:28Z",
+			"info": {
+				"desc": "a sensor reading"
+			}
+		}`
+
+	var reading SensorReading
+	errr := json.Unmarshal([]byte(jsonstring), &reading)
+	if errr != nil {
+		fmt.Println(errr)
+	}
+	fmt.Printf("%+v\n", reading)
+
+	return c.JSON(http.StatusOK, responseObject)
 }
